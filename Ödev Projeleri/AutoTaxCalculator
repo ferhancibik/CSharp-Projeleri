@@ -1,0 +1,115 @@
+using System;
+
+namespace VehicleTaxCalculator
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            char continueLoop = 'e';
+
+            do
+            {
+                Console.Write("Motor tipini giriniz (Yanmalı/Elektrikli): ");
+                string motorTipi = Console.ReadLine().ToLower();
+
+                if (motorTipi == "yanmalı" || motorTipi == "yanmali")
+                {
+                    CalculateCombustionEngineTax();
+                }
+                else if (motorTipi == "elektrikli")
+                {
+                    CalculateElectricEngineTax();
+                }
+                else
+                {
+                    Console.WriteLine("Hatalı giriş! Tekrar denemek için 'e' tuşuna basın.");
+                    continueLoop = Convert.ToChar(Console.ReadLine());
+                }
+
+                if (motorTipi == "yanmalı" || motorTipi == "yanmali" || motorTipi == "elektrikli")
+                {
+                    Console.WriteLine("Başka bir hesaplama yapmak ister misiniz? (e/E): ");
+                    continueLoop = Convert.ToChar(Console.ReadLine());
+                }
+            }
+            while (continueLoop == 'e' || continueLoop == 'E');
+        }
+
+        static void CalculateCombustionEngineTax()
+        {
+            Console.Write("Silindir hacmini giriniz (cm³): ");
+            int silindirHacmi = int.Parse(Console.ReadLine());
+
+            Console.Write("Vergisiz satış tutarını giriniz: ");
+            int vergisizSatis = int.Parse(Console.ReadLine());
+
+            double otvOrani = CalculateOTVForCombustionEngine(vergisizSatis, silindirHacmi);
+            DisplaySaleDetails(vergisizSatis, otvOrani, "Yanmalı", silindirHacmi);
+        }
+
+        static void CalculateElectricEngineTax()
+        {
+            Console.Write("Motor gücünü giriniz (kW): ");
+            int motorGucu = int.Parse(Console.ReadLine());
+
+            Console.Write("Vergisiz satış tutarını giriniz: ");
+            int vergisizSatis = int.Parse(Console.ReadLine());
+
+            double otvOrani = CalculateOTVForElectricEngine(vergisizSatis, motorGucu);
+            DisplaySaleDetails(vergisizSatis, otvOrani, "Elektrikli", motorGucu);
+        }
+
+        static double CalculateOTVForCombustionEngine(int vergisizSatis, int silindirHacmi)
+        {
+            if (vergisizSatis <= 184000 && silindirHacmi <= 1600)
+                return 0.45;
+            if (vergisizSatis < 220000 && silindirHacmi <= 1600)
+                return 0.50;
+            if (vergisizSatis < 250000 && silindirHacmi <= 1600)
+                return 0.60;
+            if (vergisizSatis < 280000 && silindirHacmi <= 1600)
+                return 0.70;
+            if (vergisizSatis >= 280000 && silindirHacmi <= 1600)
+                return 0.80;
+            if (silindirHacmi > 1600 && vergisizSatis < 170000 && silindirHacmi < 2000)
+                return 1.30;
+            if (silindirHacmi > 1600 && vergisizSatis >= 170000 && silindirHacmi < 2000)
+                return 1.50;
+            if (silindirHacmi >= 2000)
+                return 2.20;
+
+            Console.WriteLine("Geçersiz giriş! Varsayılan OTV oranı uygulanıyor.");
+            return 0.45;
+        }
+
+        static double CalculateOTVForElectricEngine(int vergisizSatis, int motorGucu)
+        {
+            if (vergisizSatis <= 700000 && motorGucu <= 160)
+                return 0.10;
+            if (vergisizSatis > 700000 && motorGucu <= 160)
+                return 0.40;
+            if (vergisizSatis < 750000 && motorGucu > 160)
+                return 0.50;
+            if (vergisizSatis >= 750000 && motorGucu > 160)
+                return 0.60;
+
+            Console.WriteLine("Geçersiz giriş! Varsayılan OTV oranı uygulanıyor.");
+            return 0.10;
+        }
+
+        static void DisplaySaleDetails(int vergisizSatis, double otvOrani, string motorTipi, int motorDegeri)
+        {
+            double kdvOrani = 0.18;
+            double satisFiyati = (vergisizSatis * otvOrani) + vergisizSatis;
+            satisFiyati += (satisFiyati * kdvOrani);
+
+            Console.WriteLine("--------------------------------");
+            Console.WriteLine($"Vergisiz Satış Fiyatı: {vergisizSatis}");
+            Console.WriteLine($"Satış Fiyatı: {satisFiyati}");
+            Console.WriteLine($"Motor Tipi: {motorTipi}");
+            Console.WriteLine($"Motor Değeri: {motorDegeri}");
+            Console.WriteLine("--------------------------------");
+        }
+    }
+}
