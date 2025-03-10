@@ -1,0 +1,82 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Lütfen aşağıdaki şekilde verileri girin(her değerin arasına 1er boşluk olacaktır):");
+        Console.WriteLine("s t a b m n m1-mm n1-nn");
+        Console.WriteLine("s: Evin başlangıç noktası");
+        Console.WriteLine("t: Evin bitiş noktası");
+        Console.WriteLine("a: Elma ağacının koordinatı");
+        Console.WriteLine("b: Portakal ağacının koordinatı");
+        Console.WriteLine("m: Elma ağacından düşen elma sayısı");
+        Console.WriteLine("n: Portakal ağacından düşen portakal sayısı");
+        Console.WriteLine("m1-mm: Elma ağaçlarından düşen elmaların mesafeleri");
+        Console.WriteLine("n1-nn: Portakal ağaçlarından düşen portakalların mesafeleri");
+        Console.WriteLine("Örnek: 7 10 4 12 3 3 2 3 -4 3 -2 -4");
+        string degerler = Console.ReadLine();
+     
+
+        List<int> veriList = new List<int>();
+        int baslangicIndex = 0;
+
+        for (int i = 0; i < degerler.Length; i++)
+        {
+            if (degerler[i] == ' ')
+            {
+                veriList.Add(int.Parse(degerler.Substring(baslangicIndex, i - baslangicIndex)));
+                baslangicIndex = i + 1;
+            }
+        }
+        veriList.Add(int.Parse(degerler.Substring(baslangicIndex)));
+
+        int[] veri = veriList.ToArray();
+
+        int s = veri[0];
+        int t = veri[1];
+        int a = veri[2];
+        int b = veri[3];
+        int m = veri[4];
+        int n = veri[5];
+
+        int[] elmaUzakliklari = new int[m];
+        int[] portakalUzakliklari = new int[n];
+
+        int indeks = 6;
+        for (int i = 0; i < m; i++)
+        {
+            elmaUzakliklari[i] = veri[indeks++];
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            portakalUzakliklari[i] = veri[indeks++];
+        }
+
+        int dusenElma = 0;
+        for (int i = 0; i < m; i++)
+        {
+            int dusmeYeri = a + elmaUzakliklari[i];
+            if (dusmeYeri >= s && dusmeYeri <= t)
+            {
+                dusenElma++;
+            }
+        }
+
+        int dusenPortakal = 0;
+        for (int i = 0; i < n; i++)
+        {
+            int dusmeYeri = b + portakalUzakliklari[i];
+            if (dusmeYeri >= s && dusmeYeri <= t)
+            {
+                dusenPortakal++;
+            }
+        }
+
+        Console.WriteLine("Düşen elma sayısı: " + dusenElma);
+        Console.WriteLine("Düşen portakal sayısı: " + dusenPortakal);
+        Console.ReadKey();
+    }
+
+}
