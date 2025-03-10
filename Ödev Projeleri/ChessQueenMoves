@@ -1,0 +1,70 @@
+using System;
+using System.Collections.Generic;
+
+namespace SatrancSorusu
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int tahtaBoyutu = 8;
+            Konum vezirKonum = new Konum(3, 3);
+            List<Konum> engeller = new List<Konum>
+            {
+                new Konum(0, 0),
+                new Konum(5, 1),
+                new Konum(2, 1),
+                new Konum(4, 4)
+            };
+
+            var gidilebilecekKareler = Hesapla(tahtaBoyutu, vezirKonum, engeller);
+
+            Console.WriteLine("Vezirin gidebileceği alanlar:");
+            foreach (var kare in gidilebilecekKareler)
+            {
+                Console.WriteLine($"({kare.X}, {kare.Y})");
+            }
+        }
+
+        static List<Konum> Hesapla(int tahtaBoyutu, Konum vezirKonum, List<Konum> engeller)
+        {
+            List<Konum> gidilebilecekKareler = new List<Konum>();
+            int[] dx = { 1, -1, 0, 0, 1, -1, 1, -1 };
+            int[] dy = { 0, 0, 1, -1, 1, 1, -1, -1 };
+
+            for (int i = 0; i < 8; i++)
+            {
+                int x = vezirKonum.X;
+                int y = vezirKonum.Y;
+
+                while (true)
+                {
+                    x += dx[i];
+                    y += dy[i];
+
+                    if (x < 0 || x >= tahtaBoyutu || y < 0 || y >= tahtaBoyutu)
+                        break;
+
+                    if (engeller.Exists(e => e.X == x && e.Y == y))
+                        break;
+
+                    gidilebilecekKareler.Add(new Konum(x, y));
+                }
+            }
+
+            return gidilebilecekKareler;
+        }
+    }
+
+    class Konum
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public Konum(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+}
